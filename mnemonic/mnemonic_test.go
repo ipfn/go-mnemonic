@@ -1,11 +1,11 @@
-package bip39
+package mnemonic
 
 import (
 	"crypto/rand"
 	"encoding/hex"
 	"testing"
 
-	"github.com/tyler-smith/go-bip39/wordlists"
+	"github.com/ipfn/go-ipfn-mnemonic/wordlists"
 )
 
 type vector struct {
@@ -32,12 +32,12 @@ func TestGetWordIndex(t *testing.T) {
 	}
 }
 
-func TestNewMnemonic(t *testing.T) {
+func TestNew(t *testing.T) {
 	for _, vector := range testVectors() {
 		entropy, err := hex.DecodeString(vector.entropy)
 		assertNil(t, err)
 
-		mnemonic, err := NewMnemonic(entropy)
+		mnemonic, err := New(entropy)
 		assertNil(t, err)
 		assertEqualString(t, vector.mnemonic, mnemonic)
 
@@ -49,8 +49,8 @@ func TestNewMnemonic(t *testing.T) {
 	}
 }
 
-func TestNewMnemonicInvalidEntropy(t *testing.T) {
-	_, err := NewMnemonic([]byte{})
+func TestNewInvalidEntropy(t *testing.T) {
+	_, err := New([]byte{})
 	assertNotNil(t, err)
 }
 
@@ -61,23 +61,23 @@ func TestNewSeedWithErrorCheckingInvalidMnemonics(t *testing.T) {
 	}
 }
 
-func TestIsMnemonicValid(t *testing.T) {
+func TestIsValid(t *testing.T) {
 	for _, vector := range badMnemonicSentences() {
-		assertFalse(t, IsMnemonicValid(vector.mnemonic))
+		assertFalse(t, IsValid(vector.mnemonic))
 	}
 
 	for _, vector := range testVectors() {
-		assertTrue(t, IsMnemonicValid(vector.mnemonic))
+		assertTrue(t, IsValid(vector.mnemonic))
 	}
 }
 
-func TestMnemonicToByteArrayInvalidMnemonic(t *testing.T) {
+func TestToByteArrayInvalidMnemonic(t *testing.T) {
 	for _, vector := range badMnemonicSentences() {
-		_, err := MnemonicToByteArray(vector.mnemonic)
+		_, err := ToByteArray(vector.mnemonic)
 		assertNotNil(t, err)
 	}
 
-	_, err := MnemonicToByteArray("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon yellow")
+	_, err := ToByteArray("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon yellow")
 	assertNotNil(t, err)
 	assertEqual(t, err, ErrChecksumIncorrect)
 }
@@ -97,7 +97,7 @@ func TestNewEntropy(t *testing.T) {
 	}
 }
 
-func TestMnemonicToByteArrayForDifferentArrayLangths(t *testing.T) {
+func TestToByteArrayForDifferentArrayLangths(t *testing.T) {
 	max := 1000
 	for i := 0; i < max; i++ {
 		//16, 20, 24, 28, 32
@@ -109,12 +109,12 @@ func TestMnemonicToByteArrayForDifferentArrayLangths(t *testing.T) {
 			t.Errorf("Wrong number of bytes read: %d", n)
 		}
 
-		mnemonic, err := NewMnemonic(seed)
+		mnemonic, err := New(seed)
 		if err != nil {
 			t.Errorf("%v", err)
 		}
 
-		_, err = MnemonicToByteArray(mnemonic)
+		_, err = ToByteArray(mnemonic)
 		if err != nil {
 			t.Errorf("Failed for %x - %v", seed, mnemonic)
 		}
@@ -135,7 +135,7 @@ func TestCompareByteSlices(t *testing.T) {
 	assertFalse(t, compareByteSlices([]byte{1}, nil))
 }
 
-func TestMnemonicToByteArrayForZeroLeadingSeeds(t *testing.T) {
+func TestToByteArrayForZeroLeadingSeeds(t *testing.T) {
 	ms := []string{
 		"00000000000000000000000000000000",
 		"00a84c51041d49acca66e6160c1fa999",
@@ -218,64 +218,64 @@ func TestMnemonicToByteArrayForZeroLeadingSeeds(t *testing.T) {
 	for _, m := range ms {
 		seed, _ := hex.DecodeString(m)
 
-		mnemonic, err := NewMnemonic(seed)
+		mnemonic, err := New(seed)
 		if err != nil {
 			t.Errorf("%v", err)
 		}
 
-		_, err = MnemonicToByteArray(mnemonic)
+		_, err = ToByteArray(mnemonic)
 		if err != nil {
 			t.Errorf("Failed for %x - %v", seed, mnemonic)
 		}
 	}
 }
-func TestEntropyFromMnemonic128(t *testing.T) {
-	testEntropyFromMnemonic(t, 128)
+func TestToEntropy128(t *testing.T) {
+	testToEntropy(t, 128)
 }
 
-func TestEntropyFromMnemonic160(t *testing.T) {
-	testEntropyFromMnemonic(t, 160)
+func TestToEntropy160(t *testing.T) {
+	testToEntropy(t, 160)
 }
 
-func TestEntropyFromMnemonic192(t *testing.T) {
-	testEntropyFromMnemonic(t, 192)
+func TestToEntropy192(t *testing.T) {
+	testToEntropy(t, 192)
 }
 
-func TestEntropyFromMnemonic224(t *testing.T) {
-	testEntropyFromMnemonic(t, 224)
+func TestToEntropy224(t *testing.T) {
+	testToEntropy(t, 224)
 }
 
-func TestEntropyFromMnemonic256(t *testing.T) {
-	testEntropyFromMnemonic(t, 256)
+func TestToEntropy256(t *testing.T) {
+	testToEntropy(t, 256)
 }
 
-func TestEntropyFromMnemonicInvalidChecksum(t *testing.T) {
-	_, err := EntropyFromMnemonic("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon yellow")
+func TestToEntropyInvalidChecksum(t *testing.T) {
+	_, err := ToEntropy("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon yellow")
 	assertEqual(t, ErrChecksumIncorrect, err)
 }
 
-func TestEntropyFromMnemonicInvalidMnemonicSize(t *testing.T) {
+func TestToEntropyInvalidMnemonicSize(t *testing.T) {
 	for _, mnemonic := range []string{
 		"a a a a a a a a a a a a a a a a a a a a a a a a a", // Too many words
-		"a", // Too few
+		"a",                           // Too few
 		"a a a a a a a a a a a a a a", // Not multiple of 3
 	} {
-		_, err := EntropyFromMnemonic(mnemonic)
-		assertEqual(t, ErrInvalidMnemonic, err)
+		_, err := ToEntropy(mnemonic)
+		assertEqual(t, ErrInvalid, err)
 	}
 }
 
-func testEntropyFromMnemonic(t *testing.T, bitSize int) {
+func testToEntropy(t *testing.T, bitSize int) {
 	for i := 0; i < 512; i++ {
 		expectedEntropy, err := NewEntropy(bitSize)
 		assertNil(t, err)
 		assertTrue(t, len(expectedEntropy) != 0)
 
-		mnemonic, err := NewMnemonic(expectedEntropy)
+		mnemonic, err := New(expectedEntropy)
 		assertNil(t, err)
 		assertTrue(t, len(mnemonic) != 0)
 
-		actualEntropy, err := EntropyFromMnemonic(mnemonic)
+		actualEntropy, err := ToEntropy(mnemonic)
 		assertNil(t, err)
 		assertEqualByteSlices(t, expectedEntropy, actualEntropy)
 	}
