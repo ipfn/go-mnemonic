@@ -50,7 +50,7 @@ This source code is part of [IPFN](https://github.com/ipfn) – interplanetary f
 [docs]: https://docs.ipfn.io/
 [COPYING]: https://github.com/ipfn/go-ipfn-mnemonic/blob/master/COPYING
 [badge-ci]: https://travis-ci.org/ipfn/go-ipfn-mnemonic.svg?branch=master
-[badge-copying]: https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square
+[badge-copying]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
 [badge-docs]: https://img.shields.io/badge/documentation-IPFN-blue.svg?style=flat-square
 [badge-godoc]: https://godoc.org/github.com/ipfn/go-ipfn-mnemonic/mnemonic?status.svg
 [badge-ipfn]: https://img.shields.io/badge/project-IPFN-blue.svg?style=flat-square
