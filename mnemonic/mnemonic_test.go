@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/ipfn/go-ipfn-mnemonic/wordlists"
+	"github.com/ipfn/go-mnemonic/wordlists"
 )
 
 type vector struct {

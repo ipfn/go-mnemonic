@@ -16,7 +16,7 @@ import (
 
 	"golang.org/x/crypto/pbkdf2"
 
-	"github.com/ipfn/go-ipfn-mnemonic/wordlists"
+	"github.com/ipfn/go-mnemonic/wordlists"
 )
 
 var (
