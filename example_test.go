@@ -7,7 +7,7 @@ import (
 	"github.com/ipfn/go-mnemonic/mnemonic"
 )
 
-func ExampleNewMnemonic() {
+func ExampleNew() {
 	// the entropy can be any byte slice, generated how pleased,
 	// as long its bit size is a multiple of 32 and is within
 	// the inclusive range of {128,256}
